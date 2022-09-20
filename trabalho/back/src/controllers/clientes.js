@@ -19,7 +19,6 @@ function listarCLientes(req, res) {
 }
 
 function cadastrarClientes(req, res) {
-    // let data = new Date()
     let query = `INSERT INTO clientes VALUES ('${req.body.cpf}', '${req.body.nome}', '${req.body.telefone}', '${req.body.endereco}')`;
 
     conDB.query(query, (err, result) => {

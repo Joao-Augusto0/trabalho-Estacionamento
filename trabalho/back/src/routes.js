@@ -21,5 +21,6 @@ router.post("/entradas", entrada.cadastrarEntrada)
 
 const vagas = require('./controllers/vaga')
 router.get("/vagas", vagas.listarVagas)
+router.put("/vagas", vagas.editarVagas)
 
 module.exports = router

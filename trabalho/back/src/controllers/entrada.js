@@ -30,7 +30,33 @@ function cadastrarEntrada(req, res) {
     })
 }
 
+function excluirEntrada(req, res) {
+    let query = `DELETE FROM entrada WHERE cpf = '${req.body.cpf}'`;
+
+    conDB.query(query, (err, result) => {
+        if (err == null) {
+            res.status(200).json(req.body).end();
+        } else {
+            res.status(400).json(err).end();
+        }
+    });
+};
+
+
+function editarEntrada(req, res) {
+    let query = `UPDATE entrada SET placa = '${req.body.placa}', cpf = '${req.body.cpf}', hora_entrada = '${req.body.hora_entrada}', hora_saida = '${req.body.hora_saida}', valor_hora = '${req.body.valor_hora}', vaga = '${req.body.vaga}' WHERE cpf = '${req.body.cpf}'`;
+    conDB.query(query, (err, result) => {
+        if (err == null) {
+            res.status(200).json(req.body).end();
+        } else {
+            res.status(400).json(err).end();
+        }
+    });
+};
+
 module.exports = {
     listarEntradas,
     cadastrarEntrada,
+    editarEntrada,
+    excluirEntrada
 }

@@ -18,6 +18,19 @@ function listarVagas(req, res) {
     })
 }
 
+function editarVagas(req, res) {
+    let query = `UPDATE vaga SET id_vaga = '${req.body.id_vaga}', ocupada = '${req.body.ocupada}'`;
+
+    conDB.query(query, (err, result) => {
+        if (err == null) {
+            res.status(200).json(req.body).end();
+        } else {
+            res.status(400).json(err).end();
+        }
+    });
+};
+
 module.exports = {
-    listarVagas
+    listarVagas,
+    editarVagas
 }

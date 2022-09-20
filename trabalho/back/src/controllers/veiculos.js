@@ -19,7 +19,6 @@ function listarVeiculos(req, res) {
 }
 
 function cadastrarVeiculo(req, res) {
-    // let data = new Date()
     let query = `INSERT INTO veiculos VALUES ('${req.body.placa}', '${req.body.marca}', '${req.body.modelo}', '${req.body.cor}','${req.body.ano}')`;
 
     conDB.query(query, (err, result) => {
