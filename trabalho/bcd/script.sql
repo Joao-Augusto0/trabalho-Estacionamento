@@ -36,6 +36,13 @@ create table entrada(
     foreign key (vaga) references vaga(id_vaga)
 );
 
+create table funcionarios(
+    id_func integer  not null auto_increment primary key,
+    nome varchar (50) not null,
+    cargo varchar(50) not null,
+    email varchar(100) not null,
+    senha varchar(100) not null
+);
 
 create view vw_dia as
 select
@@ -62,4 +69,5 @@ from
 INSERT INTO clientes VALUES ('43565489504', 'jean', '19 987428374','rua tal do bairro tal');
 INSERT INTO veiculos VALUES ('KDL-7857', 'BMW', 'Conversível','cinza','2015');
 INSERT INTO vaga VALUES ('A2', "false");
-
+insert into entrada values ("",)
+insert into funcionarios values('default',"jose","patrao","jose@gmail.com","teteu123");

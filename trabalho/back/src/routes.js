@@ -16,11 +16,20 @@ router.put("/veiculos", veiculos.editarVeiculos)
 router.delete("/veiculos", veiculos.excluirVeiculos)
 
 const entrada = require('./controllers/entrada')
+
 router.get("/entradas", entrada.listarEntradas)
 router.post("/entradas", entrada.cadastrarEntrada)
 
 const vagas = require('./controllers/vaga')
+
 router.get("/vagas", vagas.listarVagas)
 router.put("/vagas", vagas.editarVagas)
+
+const funcionario = require('./controllers/funcionario')
+
+router.get("/funcionarios", funcionario.listarFuncionarios)
+router.post("/funcionarios", funcionario.cadastrarFuncionario)
+router.put("/funcionarios", funcionario.editarFuncionario)
+router.delete("/funcionarios", funcionario.excluirFuncionario)
 
 module.exports = router
