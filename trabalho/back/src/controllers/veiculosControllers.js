@@ -1,65 +1,56 @@
-const mysql = require('mysql')
+const Item = require('../models/veiculos')
+const con = require('../models/estacionamentoDAO')
 
-conDB = mysql.createConnection({
-    "host": "localhost",
-    "user": "root",
-    "database": "estacionamento"
-})
-
-function listarVeiculos(req, res) {
-    let query = "SELECT * FROM veiculos";
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.json(result).status(200).end();
-        } else {
-            res.json(err).status(400).end();
-        }
-    })
+const listarVeiculos = (req, res) => {
+    con.query(Item.toReadAll(), (err, result) => {
+        if (err == null)
+            res.json(result).end();
+        else
+            res.status(500).end();
+    });
 }
 
-function cadastrarVeiculo(req, res) {
-    let query = `INSERT INTO veiculos VALUES ('${req.body.placa}', '${req.body.marca}', '${req.body.modelo}', '${req.body.cor}','${req.body.ano}')`;
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(201).json(req.body).end();
-        } else {
-            res.status(400).json(err).end();
-        }
-    })
+const cadastrarVeiculos = (req, res) => {
+    con.query(Item.toCreate(req.body), (err, result) => {
+        if (err == null)
+            res.status(201).end();
+        else
+            if (err.sqlState == 23000)//Se o ni já está cadastrado
+                res.status(406).json(err).end();
+            else
+                res.status(500).json(err).end();
+    });
 }
 
-function excluirVeiculos(req, res) {
-    let query = `DELETE FROM veiculos WHERE placa = '${req.body.placa}'`;
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(200).json(req.body).end();
-        } else {
+const excluirVeiculos = (req, res) => {
+    con.query(Item.toDelete(req.params), (err, result) => {
+        if (err == null)
+            if (result.affectedRows > 0)
+                res.status(204).end();
+            else
+                res.status(404).end();
+        else
             res.status(400).json(err).end();
-        }
     });
-};
+}
 
 
-function editarVeiculos(req, res) {
-    let query = `UPDATE veiculos SET placa = '${req.body.placa}', marca = '${req.body.marca}', modelo = '${req.body.modelo}', cor = '${req.body.cor}',ano = '${req.body.ano}' WHERE placa = '${req.body.placa}'`;
-
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(200).json(req.body).end();
-        } else {
-            res.status(400).json(err).end();
-        }
+const editarVeiculos = (req, res) => {
+    con.query(Item.toUpdate(req.body), (err, result) => {
+        if (err == null)
+            if (result.affectedRows > 0)
+                res.status(200).end();
+            else
+                res.status(404).end();
+        else
+            res.status(500).json(err).end();
     });
-};
+}
 
 
 module.exports = {
+    cadastrarVeiculos,
     listarVeiculos,
-    cadastrarVeiculo,
-    excluirVeiculos,
-    editarVeiculos
+    editarVeiculos,
+    excluirVeiculos
 }

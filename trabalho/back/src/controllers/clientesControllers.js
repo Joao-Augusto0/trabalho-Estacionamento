@@ -1,59 +1,56 @@
-const Item = require('../models/item')
+const clientes = require('../models/clientes')
 const con = require('../models/estacionamentoDAO')
 
 const listarCLientes = (req, res) => {
-    let query = "SELECT * FROM clientes";
-
-    con.query(query, (err, result) => {
-        if (err == null) {
-            res.json(result).status(200).end();
-        } else {
-            res.json(err).status(400).end();
-        }
+    con.query(clientes.toReadAll(), (err, result) => {
+        if (err == null)
+            res.json(result).end();
+        else
+            res.status(500).end();
     })
 }
 
 const cadastrarClientes = (req, res) => {
-    let query = `INSERT INTO clientes VALUES ('${req.body.cpf}', '${req.body.nome}', '${req.body.telefone}', '${req.body.endereco}')`;
-
-    con.query(query, (err, result) => {
-        if (err == null) {
-            res.status(201).json(req.body).end();
-        } else {
-            res.status(400).json(err).end();
-        }
-    })
+    con.query(clientes.toCreate(req.body), (err, result) => {
+        if (err == null)
+            res.status(201).end();
+        else
+            if (err.sqlState == 23000)
+                res.status(406).json(err).end();
+            else
+                res.status(500).json(err).end();
+    });
 }
 
 const excluirClientes = (req, res) => {
-    let query = `DELETE FROM clientes WHERE cpf = '${req.body.cpf}'`;
-
-    con.query(query, (err, result) => {
-        if (err == null) {
-            res.status(200).json(req.body).end();
-        } else {
+    con.query(clientes.toDelete(req.params), (err, result) => {
+        if (err == null)
+            if (result.affectedRows > 0)
+                res.status(204).end();
+            else
+                res.status(404).end();
+        else
             res.status(400).json(err).end();
-        }
     });
-};
+}
 
 
 const editarClientes = (req, res) => {
-    let query = `UPDATE clientes SET cpf = '${req.body.cpf}', nome = '${req.body.nome}', telefone = '${req.body.telefone}', endereco = '${req.body.endereco}' WHERE cpf = '${req.body.cpf}'`;
-
-    con.query(query, (err, result) => {
-        if (err == null) {
-            res.status(200).json(req.body).end();
-        } else {
-            res.status(400).json(err).end();
-        }
+    con.query(clientes.toUpdate(req.body), (err, result) => {
+        if (err == null)
+            if (result.affectedRows > 0)
+                res.status(200).end();
+            else
+                res.status(404).end();
+        else
+            res.status(500).json(err).end();
     });
-};
+}
 
 
 module.exports = {
-    listarCLientes,
     cadastrarClientes,
-    excluirClientes,
-    editarClientes
+    listarCLientes,
+    editarClientes,
+    excluirClientes
 }

@@ -1,35 +1,37 @@
 const express = require('express')
 const router = express.Router()
 
-const clientes = require('../controllers/clientes')
+const clientes = require('../controllers/clientesControllers')
 
-router.get("/clientes", clientes.listarCLientes)
-router.post("/clientes", clientes.cadastrarClientes)
-router.put("/clientes", clientes.editarClientes)
-router.delete("/clientes", clientes.excluirClientes)
+router.get("/estacionamento/clientes", clientes.listarCLientes)
+router.post("/estacionamento/clientes", clientes.cadastrarClientes)
+router.put("/estacionamento/clientes", clientes.editarClientes)
+router.delete("/estacionamento/clientes", clientes.excluirClientes)
 
-const veiculos = require('../controllers/veiculos')
+const veiculos = require('../controllers/veiculosControllers')
 
-router.get("/veiculos", veiculos.listarVeiculos)
-router.post("/veiculos", veiculos.cadastrarVeiculo)
-router.put("/veiculos", veiculos.editarVeiculos)
-router.delete("/veiculos", veiculos.excluirVeiculos)
+router.get("/estacionamento/veiculos", veiculos.listarVeiculos)
+router.post("/estacionamento/veiculos", veiculos.cadastrarVeiculos)
+router.delete("/estacionamento/veiculos", veiculos.excluirVeiculos)
+router.delete("/estacionamento/veiculos", veiculos.excluirVeiculos)
 
-const entrada = require('../controllers/entrada')
+const entrada = require('../controllers/entradaControllers')
 
-router.get("/entradas", entrada.listarEntradas)
-router.post("/entradas", entrada.cadastrarEntrada)
+router.get("/estacionamento/entradas", entrada.listarEntradas)
+router.post("/estacionamento/entradas", entrada.cadastrarEntradas)
+router.delete("/estacionamento/entradas", entrada.excluirEntradas)
+router.put("/estacionamento/entradas", entrada.editarEntradas)
 
-const vagas = require('../controllers/vaga')
+const vagas = require('../controllers/vagaControllers')
 
-router.get("/vagas", vagas.listarVagas)
-router.put("/vagas", vagas.editarVagas)
+router.get("/estacionamento/vagas", vagas.listarVagas)
+router.put("/estacionamento/vagas", vagas.editarVagas)
 
-const funcionario = require('../controllers/funcionario')
+const funcionario = require('../controllers/funcionarioControllers')
 
-router.get("/funcionarios", funcionario.listarFuncionarios)
-router.post("/funcionarios", funcionario.cadastrarFuncionario)
-router.put("/funcionarios", funcionario.editarFuncionario)
-router.delete("/funcionarios", funcionario.excluirFuncionario)
+router.get("/estacionamento/funcionarios", funcionario.listarFuncionarios)
+router.post("/estacionamento/funcionarios", funcionario.cadastrarFuncionarios)
+router.put("/estacionamento/funcionarios", funcionario.editarFuncionarios)
+router.delete("/estacionamento/funcionarios", funcionario.excluirFuncionarios)
 
 module.exports = router

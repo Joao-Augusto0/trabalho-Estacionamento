@@ -1,62 +1,56 @@
-const mysql = require('mysql')
+const Item = require('../models/entrada')
+const con = require('../models/estacionamentoDAO')
 
-conDB = mysql.createConnection({
-    "host": "localhost",
-    "user": "root",
-    "database": "estacionamento"
-})
-
-function listarEntradas(req, res) {
-    let query = "SELECT * FROM vw_dia";
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.json(result).status(200).end();
-        } else {
-            res.json(err).status(400).end();
-        }
-    })
+const listarEntradas = (req, res) => {
+    con.query(Item.toReadAll(), (err, result) => {
+        if (err == null)
+            res.json(result).end();
+        else
+            res.status(500).end();
+    });
 }
 
-function cadastrarEntrada(req, res) {
-    let query = `INSERT INTO entrada VALUES ('${req.body.placa}','${req.body.cpf}', '${req.body.hora_entrada}', '${req.body.hora_saida}','${req.body.valor_hora}','${req.body.vaga}')`;
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(201).json(req.body).end();
-        } else {
-            res.status(400).json(err).end();
-        }
-    })
+const cadastrarEntradas = (req, res) => {
+    con.query(Item.toCreate(req.body), (err, result) => {
+        if (err == null)
+            res.status(201).end();
+        else
+            if (err.sqlState == 23000)
+                res.status(406).json(err).end();
+            else
+                res.status(500).json(err).end();
+    });
 }
 
-function excluirEntrada(req, res) {
-    let query = `DELETE FROM entrada WHERE cpf = '${req.body.cpf}'`;
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(200).json(req.body).end();
-        } else {
+const excluirEntradas = (req, res) => {
+    con.query(Item.toDelete(req.params), (err, result) => {
+        if (err == null)
+            if (result.affectedRows > 0)
+                res.status(204).end();
+            else
+                res.status(404).end();
+        else
             res.status(400).json(err).end();
-        }
     });
-};
+}
 
 
-function editarEntrada(req, res) {
-    let query = `UPDATE entrada SET placa = '${req.body.placa}', cpf = '${req.body.cpf}', hora_entrada = '${req.body.hora_entrada}', hora_saida = '${req.body.hora_saida}', valor_hora = '${req.body.valor_hora}', vaga = '${req.body.vaga}' WHERE cpf = '${req.body.cpf}'`;
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(200).json(req.body).end();
-        } else {
-            res.status(400).json(err).end();
-        }
+const editarEntradas = (req, res) => {
+    con.query(Item.toUpdate(req.body), (err, result) => {
+        if (err == null)
+            if (result.affectedRows > 0)
+                res.status(200).end();
+            else
+                res.status(404).end();
+        else
+            res.status(500).json(err).end();
     });
-};
+}
+
 
 module.exports = {
+    cadastrarEntradas,
     listarEntradas,
-    cadastrarEntrada,
-    editarEntrada,
-    excluirEntrada
+    editarEntradas,
+    excluirEntradas
 }

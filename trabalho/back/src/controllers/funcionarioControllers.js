@@ -1,62 +1,56 @@
-const mysql = require('mysql')
+const Item = require('../models/funcionarios')
+const con = require('../models/estacionamentoDAO')
 
-conDB = mysql.createConnection({
-    "host": "localhost",
-    "user": "root",
-    "database": "estacionamento"
-})
-
-function listarFuncionarios(req, res) {
-    let query = "SELECT * FROM funcionarios";
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.json(result).status(200).end();
-        } else {
-            res.json(err).status(400).end();
-        }
-    })
+const listarFuncionarios = (req, res) => {
+    con.query(Item.toReadAll(), (err, result) => {
+        if (err == null)
+            res.json(result).end();
+        else
+            res.status(500).end();
+    });
 }
 
-function cadastrarFuncionario(req, res) {
-    let query = `INSERT INTO funcionarios VALUES (${req.body.id_func},'${req.body.nome}','${req.body.cargo}', '${req.body.email}', '${req.body.senha}')`;
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(201).json(req.body).end();
-        } else {
-            res.status(400).json(err).end();
-        }
-    }) 
+const cadastrarFuncionarios = (req, res) => {
+    con.query(Item.toCreate(req.body), (err, result) => {
+        if (err == null)
+            res.status(201).end();
+        else
+            if (err.sqlState == 23000)
+                res.status(406).json(err).end();
+            else
+                res.status(500).json(err).end();
+    });
 }
 
-function excluirFuncionario(req, res) {
-    let query = `DELETE FROM funcionarios WHERE id_func = '${req.body.id_func}'`;
-
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(200).json(req.body).end();
-        } else {
+const excluirFuncionarios = (req, res) => {
+    con.query(Item.toDelete(req.params), (err, result) => {
+        if (err == null)
+            if (result.affectedRows > 0)
+                res.status(204).end();
+            else
+                res.status(404).end();
+        else
             res.status(400).json(err).end();
-        }
     });
-};
+}
 
 
-function editarFuncionario(req, res) {
-    let query = `UPDATE funcionarios SET id_func = ${req.body.id_func}, nome = '${req.body.nome}',cargo = '${req.body.cargo}', email = '${req.body.email}', senha = '${req.body.senha}' WHERE id_func = '${req.body.id_func}'`;
-    conDB.query(query, (err, result) => {
-        if (err == null) {
-            res.status(200).json(req.body).end();
-        } else {
-            res.status(400).json(err).end();
-        }
+const editarFuncionarios = (req, res) => {
+    con.query(Item.toUpdate(req.body), (err, result) => {
+        if (err == null)
+            if (result.affectedRows > 0)
+                res.status(200).end();
+            else
+                res.status(404).end();
+        else
+            res.status(500).json(err).end();
     });
-};
+}
+
 
 module.exports = {
+    cadastrarFuncionarios,
     listarFuncionarios,
-    cadastrarFuncionario,
-    excluirFuncionario,
-    editarFuncionario
+    editarFuncionarios,
+    excluirFuncionarios
 }
